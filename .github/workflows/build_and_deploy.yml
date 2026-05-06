@@ -1,0 +1,48 @@
+name: Build and Deploy to Itch.io
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    name: Build Unreal Project
+    runs-on: self-hosted
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Build Project
+        run: |
+          RunUAT.bat BuildCookRun -project="%GITHUB_WORKSPACE%\ROAD.uproject" -noP4 -platform=Win64 -clientconfig=Shipping -serverconfig=Shipping -cook -allmaps -build -stage -pak -archive -archivedirectory="%GITHUB_WORKSPACE%\Packaged"
+
+      - name: Upload Build Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: Windows-Build
+          path: Packaged/
+
+  deploy:
+    name: Deploy to Itch.io
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    steps:
+      - name: Download Build Artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: Windows-Build
+          path: build/
+
+      - name: Deploy to Itch.io using Butler
+        uses: manleydev/butler-publish-itchio-action@master
+        env:
+          BUTLER_CREDENTIALS: ${{ secrets.BUTLER_API_KEY }}
+          CHANNEL: windows
+          ITCH_GAME: road
+          ITCH_USER: ${{ secrets.ITCH_USERNAME }}
+          PACKAGE: build/
