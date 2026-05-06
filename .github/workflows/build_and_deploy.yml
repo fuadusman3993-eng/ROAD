@@ -11,16 +11,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Build Unreal Engine Project
-        # ማሳሰቢያ: ይህ የ Antigravity AI ያዘጋጀው ራስ-ሰር ግንባታ ነው
-        run: |
-          echo "Building ROAD project for Win64..."
-          # የግንባታ ትዕዛዞች እዚህ ይገባሉ
-
       - name: Deploy to Itch.io
-        uses: josephbstaton/unreal-engine-itch-deploy@v1
-        with:
-          butler_api_key: ${{ secrets.BUTLER_API_KEY }}
-          itch_user: ${{ secrets.ITCH_USERNAME }}
-          itch_game: ROAD
-          build_dir: 'Build/Win64'
+        uses: manleydev/butler-publish-itchio-action@master
+        env:
+          BUTLER_CREDENTIALS: ${{ secrets.BUTLER_API_KEY }}
+          CHANNEL: html5
+          ITCH_GAME: road
+          ITCH_USER: ${{ secrets.ITCH_USERNAME }}
+          PACKAGE: ./
