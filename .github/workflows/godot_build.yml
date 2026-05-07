@@ -43,10 +43,12 @@ jobs:
 
       - name: Deploy to Itch.io
         if: github.ref == 'refs/heads/master' && github.event_name == 'push'
-        uses: manleydev/butler-publish-itchio-action@master
         env:
-          BUTLER_CREDENTIALS: ${{ secrets.BUTLER_API_KEY }}
-          CHANNEL: android
-          ITCH_GAME: road
+          BUTLER_API_KEY: ${{ secrets.BUTLER_API_KEY }}
           ITCH_USER: ${{ secrets.ITCH_USERNAME }}
-          PACKAGE: build/android/ROAD.apk
+          ITCH_GAME: road
+        run: |
+          curl -L -o butler.zip https://broth.itch.ovh/butler/linux-amd64/LATEST/archive/default
+          unzip butler.zip
+          chmod +x butler
+          ./butler push build/android/ROAD.apk $ITCH_USER/$ITCH_GAME:android --userversion 1.0
