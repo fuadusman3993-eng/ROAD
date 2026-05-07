@@ -1,4 +1,4 @@
-name: Godot Android Build & Deploy
+name: Godot Android High-Speed Build & Deploy
 
 on:
   push:
@@ -9,8 +9,8 @@ on:
       - master
 
 jobs:
-  build_and_deploy:
-    name: Build & Deploy Android
+  build:
+    name: Build Android APK
     runs-on: ubuntu-latest
     container: barichello/godot-ci:4.2.1
     steps:
@@ -40,16 +40,27 @@ jobs:
         with:
           name: ROAD-Android-APK
           path: build/android/ROAD.apk
+          if-no-files-found: error
 
-      - name: Deploy to Itch.io
-        if: github.ref == 'refs/heads/master' && github.event_name == 'push'
-        env:
-          BUTLER_API_KEY: ${{ secrets.BUTLER_API_KEY }}
-          ITCH_USER: ${{ secrets.ITCH_USERNAME }}
-          ITCH_GAME: road
-        run: |
-          apt-get update && apt-get install -y curl unzip
-          curl -L -o butler.zip https://broth.itch.ovh/butler/linux-amd64/LATEST/archive/default
-          unzip butler.zip
-          chmod +x butler
-          ./butler push build/android/ROAD.apk $ITCH_USER/$ITCH_GAME:android --userversion 1.0
+  deploy:
+    name: Deploy to Itch.io
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/master' && github.event_name == 'push'
+    steps:
+      - name: Download Build Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ROAD-Android-APK
+          path: .
+
+      - name: Upload to Itch.io
+        uses: josephbstaton/upload-to-itch-action@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          itch_username: ${{ secrets.ITCH_USERNAME }}
+          itch_game_id: road
+          build_path: ROAD.apk
+          channel: android
+          user_version: 1.0
+          butler_api_key: ${{ secrets.BUTLER_API_KEY }}
