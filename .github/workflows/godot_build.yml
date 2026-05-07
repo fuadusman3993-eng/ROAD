@@ -1,4 +1,4 @@
-name: Godot Build and Deploy
+name: Godot Android High-Speed Build
 
 on:
   push:
@@ -10,7 +10,7 @@ on:
 
 jobs:
   build:
-    name: Build Godot Project
+    name: Build Android APK
     runs-on: ubuntu-latest
     container: barichello/godot-ci:4.2.1
     steps:
@@ -19,36 +19,27 @@ jobs:
         with:
           lfs: true
 
-      - name: Generate Debug Keystore
+      - name: Setup Environment
         run: |
           mkdir -p ~/.android
           keytool -genkey -v -keystore ~/.android/debug.keystore -storepass android -alias androiddebugkey -keypass android -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=Android Debug,O=Android,C=US"
-
-      - name: Configure Godot Editor Settings
-        run: |
-          mkdir -vp ~/.config/godot
+          mkdir -p ~/.config/godot
           echo '[resource]' > ~/.config/godot/editor_settings-4.tres
           echo 'export/android/android_sdk_path = "/usr/lib/android-sdk"' >> ~/.config/godot/editor_settings-4.tres
           echo 'export/android/debug_keystore = "/root/.android/debug.keystore"' >> ~/.config/godot/editor_settings-4.tres
           echo 'export/android/debug_keystore_user = "androiddebugkey"' >> ~/.config/godot/editor_settings-4.tres
           echo 'export/android/debug_keystore_pass = "android"' >> ~/.config/godot/editor_settings-4.tres
 
-      - name: Prepare Build Directory
-        run: mkdir -v -p build/android
-
-      - name: Godot Export
+      - name: Export APK
         run: |
+          mkdir -p build/android
           godot --headless --export-debug "Android" build/android/ROAD.apk
 
-      - name: Zip Build Output
-        run: |
-          cd build/android && zip -r ../../Android.zip .
-
-      - name: Upload Build Artifact
+      - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: Android-Build
-          path: Android.zip
+          name: ROAD-Android-APK
+          path: build/android/ROAD.apk
 
   deploy:
     name: Deploy to Itch.io
@@ -59,7 +50,7 @@ jobs:
       - name: Download Build Artifact
         uses: actions/download-artifact@v4
         with:
-          name: Android-Build
+          name: ROAD-Android-APK
           path: .
 
       - name: Deploy to Itch.io using Butler
@@ -69,4 +60,4 @@ jobs:
           CHANNEL: android
           ITCH_GAME: road
           ITCH_USER: ${{ secrets.ITCH_USERNAME }}
-          PACKAGE: Android.zip
+          PACKAGE: ROAD.apk
