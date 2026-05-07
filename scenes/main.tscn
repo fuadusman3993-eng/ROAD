@@ -1,18 +1,7 @@
 [gd_scene load_steps=2 format=3 uid="uid://b2x6y2m6v5j7k"]
 
-[ext_resource type="PackedScene" uid="uid://c6l8j1w3v2k4n" path="res://scenes/touch_controls.tscn" id="1_touch"]
+[ext_resource type="PackedScene" uid="uid://cb5p2w1qj8n3v" path="res://scenes/lobby.tscn" id="1_lobby"]
 
-[node name="Main" type="Node3D"]
+[node name="Main" type="Node"]
 
-[node name="TouchControls" parent="." instance=ExtResource("1_touch")]
-
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
-transform = Transform3D(-0.866025, -0.433013, 0.25, 0, 0.5, 0.866025, -0.5, 0.75, -0.433013, 0, 0, 0)
-shadow_enabled = true
-
-[node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 4)
-
-[node name="CSGBox3D" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
-size = Vector3(1, 1, 1)
+[node name="Lobby" parent="." instance=ExtResource("1_lobby")]

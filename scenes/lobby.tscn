@@ -1,0 +1,139 @@
+[gd_scene load_steps=3 format=3 uid="uid://cb5p2w1qj8n3v"]
+
+[ext_resource type="Texture2D" uid="uid://b8m3yvj7u6n5p" path="res://assets/ui/maps/metropolis.png" id="1_texture"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1"]
+bg_color = Color(0.129412, 0.14902, 0.192157, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[node name="Lobby" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.0784314, 0.0901961, 0.113725, 1)
+
+[node name="CharacterArea" type="Node3D" parent="."]
+
+[node name="Camera3D" type="Camera3D" parent="CharacterArea"]
+transform = Transform3D(0.965926, 0, 0.258819, 0, 1, 0, -0.258819, 0, 0.965926, 0.8, 1.5, 3)
+
+[node name="PlaceholderHero" type="CSGBox3D" parent="CharacterArea"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 0)
+size = Vector3(0.5, 1.8, 0.5)
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="HUD" type="Control" parent="UI"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TopLeft_UserInfo" type="VBoxContainer" parent="UI/HUD"]
+layout_mode = 0
+offset_left = 40.0
+offset_top = 40.0
+offset_right = 300.0
+offset_bottom = 140.0
+
+[node name="PlayerName" type="Label" parent="UI/HUD/TopLeft_UserInfo"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "CEO_PELL_GRAND"
+
+[node name="RankLabel" type="Label" parent="UI/HUD/TopLeft_UserInfo"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.843137, 0, 1)
+text = "Rank: PLATINUM"
+
+[node name="BottomLeft_MapSelection" type="PanelContainer" parent="UI/HUD"]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 40.0
+offset_bottom = -40.0
+grow_vertical = 0
+theme_override_styles/panel = Sub_resource("StyleBoxFlat_1")
+
+[node name="MarginContainer" type="MarginContainer" parent="UI/HUD/BottomLeft_MapSelection"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="VBox" type="VBoxContainer" parent="UI/HUD/BottomLeft_MapSelection/MarginContainer"]
+layout_mode = 2
+
+[node name="MapPreview" type="TextureRect" parent="UI/HUD/BottomLeft_MapSelection/MarginContainer/VBox"]
+custom_minimum_size = Vector2(200, 120)
+layout_mode = 2
+texture = ExtResource("1_texture")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="MapName" type="Label" parent="UI/HUD/BottomLeft_MapSelection/MarginContainer/VBox"]
+layout_mode = 2
+text = "Metropolis City"
+horizontal_alignment = 1
+
+[node name="BottomRight_Start" type="Button" parent="UI/HUD"]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -240.0
+offset_top = -120.0
+offset_right = -40.0
+offset_bottom = -40.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_font_sizes/font_size = 32
+text = "START"
+
+[node name="Footer" type="HBoxContainer" parent="UI/HUD"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -300.0
+offset_top = -80.0
+offset_right = 300.0
+offset_bottom = -40.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_constants/margin_bottom = 10
+alignment = 1
+
+[node name="Settings" type="Button" parent="UI/HUD/Footer"]
+layout_mode = 2
+text = "Settings"
+
+[node name="Inventory" type="Button" parent="UI/HUD/Footer"]
+layout_mode = 2
+text = "Inventory"
+
+[node name="Customization" type="Button" parent="UI/HUD/Footer"]
+layout_mode = 2
+text = "Customization"
