@@ -3,10 +3,10 @@ name: Build and Deploy to Itch.io
 on:
   push:
     branches:
-      - main
+      - master
   pull_request:
     branches:
-      - main
+      - master
 
 jobs:
   build:
@@ -50,7 +50,7 @@ jobs:
     name: Deploy to Itch.io
     needs: build
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    if: github.ref == 'refs/heads/master' && github.event_name == 'push'
     steps:
       - name: Download Build Artifact
         uses: actions/download-artifact@v3
