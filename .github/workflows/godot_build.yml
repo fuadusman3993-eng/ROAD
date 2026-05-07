@@ -48,6 +48,7 @@ jobs:
           ITCH_USER: ${{ secrets.ITCH_USERNAME }}
           ITCH_GAME: road
         run: |
+          apt-get update && apt-get install -y curl unzip
           curl -L -o butler.zip https://broth.itch.ovh/butler/linux-amd64/LATEST/archive/default
           unzip butler.zip
           chmod +x butler
