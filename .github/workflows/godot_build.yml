@@ -52,15 +52,13 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: ROAD-Android-APK
-          path: .
+          path: build/android/
 
       - name: Upload to Itch.io
-        uses: josephbstaton/upload-to-itch-action@v1
+        uses: keknehv/upload-to-itch@v0.3.0
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          itch_username: ${{ secrets.ITCH_USERNAME }}
-          itch_game_id: road
-          build_path: ROAD.apk
+          butler_key: ${{ secrets.BUTLER_API_KEY }}
+          itch_user: ${{ secrets.ITCH_USERNAME }}
+          itch_game: road
+          artifact: build/android/ROAD.apk
           channel: android
-          user_version: 1.0
-          butler_api_key: ${{ secrets.BUTLER_API_KEY }}
