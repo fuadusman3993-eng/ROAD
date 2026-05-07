@@ -20,7 +20,7 @@ jobs:
         # Using cmd shell ensures GitHub variables like ${{ github.workspace }} are resolved correctly.
         shell: cmd
         run: |
-          RunUAT.bat BuildCookRun -project="${{ github.workspace }}\ROAD.uproject" -noP4 -platform=Win64 -clientconfig=Shipping -serverconfig=Shipping -cook -allmaps -build -stage -pak -archive -archivedirectory="${{ github.workspace }}\Packaged" -prereqs -nodebuginfo
+          "C:\Program Files\Epic Games\UE_5.4\Engine\Build\BatchFiles\RunUAT.bat" BuildCookRun -project="${{ github.workspace }}\ROAD.uproject" -noP4 -platform=Win64 -clientconfig=Shipping -serverconfig=Shipping -cook -allmaps -build -stage -pak -archive -archivedirectory="${{ github.workspace }}\Packaged" -prereqs -nodebuginfo
 
       - name: Verify Build Output
         shell: pwsh
