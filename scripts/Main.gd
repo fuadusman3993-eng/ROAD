@@ -1,10 +1,10 @@
-extends Node
-
 func _ready():
+	# Force True Immersive Full-Screen
+	DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)
+	
 	print("Main Scene Ready. Initializing Pell Grand...")
-	# Wait for 1 second to show loading screen then reveal lobby
+	# Wait for assets to settle
 	await get_tree().create_timer(1.0).timeout
-	$LoadingLabel.hide()
-	$BackgroundFallback.hide()
-	$Lobby.show()
+	$LoadingLayer.hide()
+	$LobbyLayer.show()
 	print("Lobby Revealed.")
