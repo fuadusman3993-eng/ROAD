@@ -3,3 +3,4 @@
 
 AROADGameMode::AROADGameMode() {
   PlayerControllerClass = AROADPlayerController::StaticClass();
+}

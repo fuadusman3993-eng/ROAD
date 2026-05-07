@@ -18,24 +18,32 @@ jobs:
 
       - name: Build Project
         # Using cmd shell ensures GitHub variables like ${{ github.workspace }} are resolved correctly.
-        # Note: Local VS Code IntelliSense errors (like 'CoreMinimal.h not found') 
-        # do not affect this build process. UBT will compile the code successfully.
         shell: cmd
         run: |
-          RunUAT.bat BuildCookRun -project="${{ github.workspace }}\ROAD.uproject" -noP4 -platform=Win64 -clientconfig=Shipping -serverconfig=Shipping -cook -allmaps -build -stage -pak -archive -archivedirectory="${{ github.workspace }}\Packaged"
+          RunUAT.bat BuildCookRun -project="${{ github.workspace }}\ROAD.uproject" -noP4 -platform=Win64 -clientconfig=Shipping -serverconfig=Shipping -cook -allmaps -build -stage -pak -archive -archivedirectory="${{ github.workspace }}\Packaged" -prereqs -nodebuginfo
 
-      - name: Zip Build Output
-        # Compresses the packaged game into a single Zip file
+      - name: Verify Build Output
         shell: pwsh
         run: |
-          Compress-Archive -Path "${{ github.workspace }}\Packaged\*" -DestinationPath "${{ github.workspace }}\ROAD-Build.zip" -Force
+          if (Test-Path "${{ github.workspace }}\Packaged\Windows") {
+              Write-Host "Build directory found."
+              Get-ChildItem -Path "${{ github.workspace }}\Packaged\Windows" -Recurse
+          } else {
+              Write-Error "Build directory NOT found! Build likely failed."
+              exit 1
+          }
+
+      - name: Zip Build Output
+        # Compresses the contents of the Windows folder into a single Zip file
+        shell: pwsh
+        run: |
+          Compress-Archive -Path "${{ github.workspace }}\Packaged\Windows\*" -DestinationPath "${{ github.workspace }}\ROAD-Build.zip" -Force
 
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v3
         with:
           name: Windows-Build
           path: ROAD-Build.zip
-          # Fails the step if the Zip file wasn't created, preventing false "Success" statuses
           if-no-files-found: error
 
   deploy:
@@ -48,7 +56,7 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: Windows-Build
-          path: build/
+          path: .
 
       - name: Deploy to Itch.io using Butler
         uses: manleydev/butler-publish-itchio-action@master
@@ -57,5 +65,4 @@ jobs:
           CHANNEL: windows
           ITCH_GAME: road
           ITCH_USER: ${{ secrets.ITCH_USERNAME }}
-          # Points directly to the downloaded Zip file
-          PACKAGE: build/ROAD-Build.zip
+          PACKAGE: ROAD-Build.zip
