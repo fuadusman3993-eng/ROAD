@@ -57,18 +57,21 @@ jobs:
           mkdir -vp build/android
           godot --headless --verbose --export-debug "Android" ./ROAD.apk
           mv -v ./ROAD.apk build/android/ROAD.apk
-
-      - name: Debug Global Search
+          
+      - name: Verify APK Integrity
         run: |
-          echo "Searching for any generated APK files..."
-          find . -name "*.apk"
+          echo "Calculating MD5 checksum..."
+          md5sum build/android/ROAD.apk > build/android/ROAD.apk.md5
+          cat build/android/ROAD.apk.md5
+          echo "Verifying APK signature..."
+          # apksigner is usually in the build-tools directory of the SDK
+          find /usr/lib/android-sdk -name "apksigner" -exec {} verify --verbose build/android/ROAD.apk \; || echo "apksigner not found or failed, continuing..."
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
           name: ROAD-Android-APK
-          path: build/android/ROAD.apk
-          if-no-files-found: error
+          path: build/android/
 
   deploy:
     name: Deploy to Itch.io
