@@ -1,7 +1,30 @@
-[gd_scene load_steps=2 format=3 uid="uid://b2x6y2m6v5j7k"]
+[gd_scene load_steps=2 format=3]
 
-[ext_resource type="PackedScene" uid="uid://cb5p2w1qj8n3v" path="res://scenes/lobby.tscn" id="1_lobby"]
+[ext_resource type="PackedScene" path="res://scenes/lobby.tscn" id="1_lobby"]
 
 [node name="Main" type="Node"]
+
+[node name="BackgroundFallback" type="ColorRect" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.121569, 0.145098, 0.2, 1)
+
+[node name="LoadingLabel" type="Label" parent="."]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -50.0
+offset_top = -11.5
+offset_right = 50.0
+offset_bottom = 11.5
+grow_horizontal = 2
+grow_vertical = 2
+text = "LOADING PELL GRAND..."
+horizontal_alignment = 1
 
 [node name="Lobby" parent="." instance=ExtResource("1_lobby")]

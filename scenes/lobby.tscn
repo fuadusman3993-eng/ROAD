@@ -1,6 +1,6 @@
-[gd_scene load_steps=3 format=3 uid="uid://cb5p2w1qj8n3v"]
+[gd_scene load_steps=3 format=3]
 
-[ext_resource type="Texture2D" uid="uid://b8m3yvj7u6n5p" path="res://assets/ui/maps/metropolis.png" id="1_texture"]
+[ext_resource type="Texture2D" path="res://assets/ui/maps/metropolis.png" id="1_texture"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1"]
 bg_color = Color(0.129412, 0.14902, 0.192157, 1)
