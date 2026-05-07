@@ -45,15 +45,20 @@ jobs:
           echo "Checking for Export Templates..."
           ls -R /root/.local/share/godot/export_templates/ || echo "Templates not found in default path!"
 
+      - name: Godot Headless Import
+        run: |
+          godot --headless --editor --quit || true
+
       - name: Export APK
         run: |
           mkdir -vp build/android
-          godot --headless --verbose --export-debug "Android" build/android/ROAD.apk
+          godot --headless --verbose --export-debug "Android" ./ROAD.apk
+          mv -v ./ROAD.apk build/android/ROAD.apk
 
-      - name: Debug List Files
+      - name: Debug Global Search
         run: |
-          echo "Listing all files to find the APK..."
-          ls -R build/
+          echo "Searching for any generated APK files..."
+          find . -name "*.apk"
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
