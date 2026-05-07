@@ -55,17 +55,26 @@ jobs:
       - name: Export APK
         run: |
           mkdir -vp build/android
-          godot --headless --verbose --export-debug "Android" ./ROAD.apk
-          mv -v ./ROAD.apk build/android/ROAD.apk
+          godot --headless --verbose --export-debug "Android" ./ROAD-unsigned.apk
           
-      - name: Verify APK Integrity
+      - name: Align and Sign APK
         run: |
-          echo "Calculating MD5 checksum..."
-          md5sum build/android/ROAD.apk > build/android/ROAD.apk.md5
-          cat build/android/ROAD.apk.md5
-          echo "Verifying APK signature..."
-          # apksigner is usually in the build-tools directory of the SDK
-          find /usr/lib/android-sdk -name "apksigner" -exec {} verify --verbose build/android/ROAD.apk \; || echo "apksigner not found or failed, continuing..."
+          echo "Aligning APK..."
+          ZIPALIGN=$(find /usr/lib/android-sdk -name "zipalign" -type f | head -n 1)
+          APKSIGNER=$(find /usr/lib/android-sdk -name "apksigner" -type f | head -n 1)
+          
+          $ZIPALIGN -v 4 ./ROAD-unsigned.apk ./ROAD-aligned.apk
+          
+          echo "Signing APK with v2/v3 schemes..."
+          $APKSIGNER sign --ks debug.keystore \
+            --ks-pass pass:android \
+            --ks-key-alias androiddebugkey \
+            --key-pass pass:android \
+            --out build/android/ROAD.apk \
+            ./ROAD-aligned.apk
+            
+          echo "Verifying Final APK..."
+          $APKSIGNER verify --verbose build/android/ROAD.apk
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
