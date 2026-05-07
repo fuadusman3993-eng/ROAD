@@ -70,10 +70,9 @@ jobs:
           path: build/android/
 
       - name: Upload to Itch.io
-        uses: keknehv/upload-to-itch@v0.3.0
+        uses: robpc/itchio-upload-action@v1
         with:
-          butler_key: ${{ secrets.BUTLER_API_KEY }}
-          itch_user: ${{ secrets.ITCH_USERNAME }}
-          itch_game: road
-          artifact: build/android/ROAD.apk
+          path: build/android/ROAD.apk
+          project: ${{ secrets.ITCH_USERNAME }}/road
           channel: android
+          api-key: ${{ secrets.BUTLER_API_KEY }}
