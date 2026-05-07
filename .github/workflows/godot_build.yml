@@ -18,11 +18,14 @@ jobs:
 
       - name: Setup Android SDK & Keystore
         run: |
-          # 1. Generate Debug Keystore
-          mkdir -p ~/.android
-          keytool -genkey -v -keystore ~/.android/debug.keystore -storepass android -alias androiddebugkey -keypass android -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=Android Debug,O=Android,C=US"
+          # 1. Generate Debug Keystore in project root (res://debug.keystore)
+          keytool -genkey -v -keystore debug.keystore -storepass android -alias androiddebugkey -keypass android -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=Android Debug,O=Android,C=US"
           
-          # 2. Dynamically find Android SDK path if not in default
+          # 2. Relocate Pre-installed Templates to GitHub Home
+          mkdir -vp /github/home/.local/share/godot/export_templates/
+          cp -r /root/.local/share/godot/export_templates/* /github/home/.local/share/godot/export_templates/ || true
+          
+          # 3. Dynamically find Android SDK path
           if [ -d "/usr/lib/android-sdk" ]; then
             SDK_PATH="/usr/lib/android-sdk"
           elif [ -d "/usr/local/lib/android/sdk" ]; then
@@ -32,13 +35,13 @@ jobs:
           fi
           echo "Using Android SDK at: $SDK_PATH"
           
-          # 3. Configure Godot Editor Settings with Absolute Paths
-          mkdir -vp ~/.config/godot
-          echo '[resource]' > ~/.config/godot/editor_settings-4.tres
-          echo "export/android/android_sdk_path = \"$SDK_PATH\"" >> ~/.config/godot/editor_settings-4.tres
-          echo "export/android/debug_keystore = \"/root/.android/debug.keystore\"" >> ~/.config/godot/editor_settings-4.tres
-          echo 'export/android/debug_keystore_user = "androiddebugkey"' >> ~/.config/godot/editor_settings-4.tres
-          echo 'export/android/debug_keystore_pass = "android"' >> ~/.config/godot/editor_settings-4.tres
+          # 4. Configure Godot Editor Settings for GitHub Home
+          mkdir -vp /github/home/.config/godot
+          echo '[resource]' > /github/home/.config/godot/editor_settings-4.tres
+          echo "export/android/android_sdk_path = \"$SDK_PATH\"" >> /github/home/.config/godot/editor_settings-4.tres
+          echo "export/android/debug_keystore = \"$GITHUB_WORKSPACE/debug.keystore\"" >> /github/home/.config/godot/editor_settings-4.tres
+          echo 'export/android/debug_keystore_user = "androiddebugkey"' >> /github/home/.config/godot/editor_settings-4.tres
+          echo 'export/android/debug_keystore_pass = "android"' >> /github/home/.config/godot/editor_settings-4.tres
 
       - name: Verify Environment (Logging Only)
         run: |
